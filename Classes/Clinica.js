@@ -1,7 +1,3 @@
-import { Paciente } from './paciente.js';
-import { Consulta } from './Consulta.js';
-
-import { DateTime } from 'luxon';
 
 export class Clinica {
     #pacientes = []; //array de pacientes (objeto) da clínica
@@ -18,23 +14,7 @@ export class Clinica {
         this.telefone = telefone;
     }
 
-    /**
-     * 
-     * @param {*} cpf 
-     * @param {*} nome 
-     * @param {*} dataNasc 
-     * Adiciona um paciente ao array de pacientes da clínica, acessando a classe Paciente
-     */
-    addPaciente(cpf, nome, dataNasc) {
-        let i = this.#pacientes.findIndex(p => p.cpf == cpf);
-        if (i != -1) {
-            throw new Error("CPF já cadastrado");
-        }
-        else {
-            let paciente = new Paciente(cpf, nome, dataNasc);
-            this.#pacientes.push(paciente);
-        }
-    }
+
 
     /**
      * 

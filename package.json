@@ -9,10 +9,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "Aplicação para Administração da Agenda de um Consultório Odontológico, desenvolvida para uso com entradas e exibição em console.",
+  "description": "",
   "dependencies": {
     "luxon": "^3.5.0",
     "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4",
     "prompt-sync": "^4.2.0",
     "sequelize": "^6.37.5"
   },

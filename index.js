@@ -1,17 +1,26 @@
-
 import promptSync from 'prompt-sync';
 const readline = promptSync();
 
-import { Clinica } from "./Classes/Clinica.js"
+import db from "./db/db.js";
+import Consulta from "./Classes/Consulta.js";
+import Paciente from "./Classes/Paciente.js";
+import repositorioConsulta from './repositorio/RepositorioConsulta.js';
+import repositorioPaciente from './repositorio/RepositorioPaciente.js';
 
-// Instanciando a clinica
-const clinica = new Clinica('Clinica Odontológica', 'Rua 1, 123', '1234-5678');
+
+// Inicializa o banco de dados
+const inicializado = await db.init();
+
+if(!inicializado){
+    console.log("Erro ao conectar com o banco de dados");
+    process.exit();
+}
 
 /**
  * Menu principal
  */
 
-function menuPrincipal() {
+async function menuPrincipal() {
     try {
         console.log('\n\n* Menu Principal* \n-------------------------------------------------------------------------------');
         console.log('1 - Cadastro de Paciente\n2 - Agenda\n3 - Fim');
@@ -41,7 +50,7 @@ function menuPrincipal() {
 /**
  * Menu do cadastro de pacientes
  */
-function menuPaciente(){
+async function menuPaciente(){
     console.log('\n\n* Menu do Cadastro de Pacientes *\n-------------------------------------------------------------------------------');
     console.log("1 - Cadastrar novo paciente\n2 - Excluir paciente\n3 - Listar pacientes por nome\n4 - Listar pacientes por CPF");
     console.log("5 - Voltar p/ menu principal");
@@ -55,7 +64,8 @@ function menuPaciente(){
                 let cpf = readline('Digite o CPF: ');
                 let nome = readline('Digite o nome: ');
                 let dataNasc = readline('Digite a data de nascimento: ');
-                clinica.addPaciente(cpf, nome, dataNasc);
+                let paciente = Paciente.of(cpf, nome, dataNasc);
+                await repositorioPaciente.addPaciente(paciente);
                 console.log('Paciente cadastrado com sucesso!');
                 cadastroRealizado = true;
             }
@@ -69,7 +79,7 @@ function menuPaciente(){
     else if(j==2){
         try {
             let cpf = readline('Digite o CPF do paciente a ser excluído: ');
-            clinica.removePaciente(cpf);
+            await repositorioPaciente.removePaciente(cpf);
         }
         catch(e){
             console.log("Erro: " + e.message);
@@ -77,11 +87,11 @@ function menuPaciente(){
         menuPaciente();
     }
     else if(j==3){
-        clinica.listarPacientesNome();
+        await repositorioPaciente.listarPacientesNome();
         menuPaciente();
     }
     else if(j==4){
-        clinica.listarPacientesCpf();
+        await repositorioPaciente.listarPacientesCpf();
         menuPaciente();
     }
     else if(j==5){
@@ -95,7 +105,7 @@ function menuPaciente(){
 /**
  * Menu da agenda
  */
-function menuAgenda(){
+async function menuAgenda(){
     console.log('\n\n* Menu da Agenda *\n-------------------------------------------------------------------------------');
     console.log("1 - Agendar consulta\n2 - Cancelar consulta\n3 - Listar agenda\n4 - Voltar p/ menu principal");
     console.log('-------------------------------------------------------------------------------');
@@ -109,7 +119,8 @@ function menuAgenda(){
                 let data = readline('Digite a data da consulta: ');
                 let horaInicial = Number(readline('Digite a hora inicial: '));
                 let horaFinal = Number(readline('Digite a hora final: '));
-                clinica.agendarConsulta(cpf, data, horaInicial, horaFinal);     
+                let consulta = Consulta.of(cpf, data, horaInicial, horaFinal);
+                await repositorioConsulta.addConsulta(consulta); 
                 console.log("Consulta agendada com sucesso!");
                 consultaAgendada = true;
             } catch (e) {
@@ -126,7 +137,7 @@ function menuAgenda(){
                 let cpf = readline('Digite o CPF do paciente da consulta: ');
                 let data = readline('Digite a data da consulta: ');
                 let horaInicial = Number(readline('Digite a hora inicial da consulta: '));
-                clinica.cancelarConsulta(cpf, data, horaInicial);
+                await repositorioConsulta.removeConsulta(cpf, data, horaInicial);
                 console.log("Consulta cancelada com sucesso!");
                 consultaCancelada = true;
             }
@@ -142,12 +153,12 @@ function menuAgenda(){
         let op = readline('Escolha uma opção: ');
         op = op.toUpperCase();
         if(op=='T'){
-            clinica.listarConsultas();
+            await repositorioConsulta.listarConsultas();
         }
         else if(op=='P'){
             let dataInicio = readline('Digite a data de início: ');
             let dataFim = readline('Digite a data de fim: ');
-            clinica.listarConsultas(dataInicio, dataFim);
+            await repositorioConsulta.listarConsultas();
         }
         menuAgenda();
     }

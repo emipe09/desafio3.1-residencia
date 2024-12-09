@@ -1,6 +1,7 @@
+import { Model } from 'sequelize';
 import { DateTime} from 'luxon';
 
-export class Consulta{
+class Consulta extends Model{
     /**
      * 
      * @param {*} cpf -- identificador único do paciente para a consulta
@@ -10,18 +11,17 @@ export class Consulta{
      * Aplica as regras de validação para a criação de uma consulta 
      * e lança um erro caso a data ou horário inválido
      */
-    constructor(cpf, dataConsulta, horaInicial, horaFinal){
+    static of(cpf, dataConsulta, horaInicial, horaFinal){
         dataConsulta = DateTime.fromFormat(dataConsulta, 'dd/MM/yyyy');
         if((horaInicial>800 && horaInicial<1900) && (horaFinal>horaInicial)
             &&((dataConsulta.isValid && dataConsulta > DateTime.now()))
             &&((horaInicial%100)%15 == 0 && (horaFinal%100)%15 == 0)){    
-                this.cpf = cpf;      
-                this.dataConsulta = dataConsulta;
-                this.horaInicial = horaInicial;
-                this.horaFinal = horaFinal;
+                return Consulta.build(({cpf, dataConsulta, horaInicial, horaFinal}));
             }                
         else{
             throw new Error("Data ou horário inválido");
         } 
     }   
 }
+
+export default Consulta;
