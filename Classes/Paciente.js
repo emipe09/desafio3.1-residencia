@@ -1,6 +1,12 @@
 import { Model } from 'sequelize';
 import { DateTime } from 'luxon';
 
+
+/**
+ * Classe que representa um paciente
+ * Validação ocorre no momento da criação do paciente
+ * Esse objeto é utilizado para criar uma nova consulta no banco de dados
+ */
 class Paciente extends Model {
     /**
      * Método para criar uma instância de Paciente

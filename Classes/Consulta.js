@@ -1,6 +1,11 @@
 import { Model } from 'sequelize';
 import { DateTime} from 'luxon';
 
+/**
+ * Classe que representa uma consulta
+ * Validação ocorre no momento da criação da consulta
+ * Esse objeto é utilizado para criar uma nova consulta no banco de dados
+ */
 class Consulta extends Model{
     /**
      * 
@@ -15,7 +20,8 @@ class Consulta extends Model{
         dataConsulta = DateTime.fromFormat(dataConsulta, 'dd/MM/yyyy');
         if((horaInicial>800 && horaInicial<1900) && (horaFinal>horaInicial)
             &&((dataConsulta.isValid && dataConsulta > DateTime.now()))
-            &&((horaInicial%100)%15 == 0 && (horaFinal%100)%15 == 0)){    
+            &&((horaInicial%100)%15 == 0 && (horaFinal%100)%15 == 0)){
+                dataConsulta = dataConsulta.toISODate();
                 return Consulta.build(({cpf, dataConsulta, horaInicial, horaFinal}));
             }                
         else{

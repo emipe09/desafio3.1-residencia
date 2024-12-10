@@ -11,6 +11,7 @@ import repositorioPaciente from './repositorio/RepositorioPaciente.js';
 // Inicializa o banco de dados
 const inicializado = await db.init();
 
+// Verifica se a conexão com o banco de dados foi estabelecida com sucesso
 if(!inicializado){
     console.log("Erro ao conectar com o banco de dados");
     process.exit();
@@ -158,7 +159,7 @@ async function menuAgenda(){
         else if(op=='P'){
             let dataInicio = readline('Digite a data de início: ');
             let dataFim = readline('Digite a data de fim: ');
-            await repositorioConsulta.listarConsultas();
+            await repositorioConsulta.listarConsultas(dataInicio, dataFim);
         }
         menuAgenda();
     }

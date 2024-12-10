@@ -1,5 +1,12 @@
 
-
+/**
+ * 
+ * @param {objetct} Paciente 
+ * @param {object} sequelize 
+ * @param {object} DataTypes 
+ * 
+ * Cria o modelo de Paciente, a partir da classe Paciente
+ */
 const createModelPaciente = (Paciente, sequelize, DataTypes) => {
     Paciente.init(
         {
@@ -19,14 +26,15 @@ const createModelPaciente = (Paciente, sequelize, DataTypes) => {
             idade: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-            }
+            },
         },
         {
             sequelize,
+            timestamps: false,
             indexes: [
                 {
                     unique: true,
-                    fields: ['cpf']
+                    fields: ['cpf'],
                 }
             ],
         }

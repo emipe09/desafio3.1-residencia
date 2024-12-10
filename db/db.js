@@ -5,10 +5,18 @@ import dbConfig from './config.js';
 import createModelConsulta from '../Schemas/consulta.js';
 import createModelPaciente from '../Schemas/paciente.js';
 
+/**
+ * Classe que representa o banco de dados
+ */
 class Db {
     #sequelize;
 
+    /**
+     * 
+     * @returns {Promise<boolean>} Retorna true se a conexão com o banco de dados foi estabelecida com sucesso
+     */
     async init() {
+        // Conectar ao banco de dados
         this.#sequelize = new Sequelize(
             dbConfig.database,
             dbConfig.username,
@@ -35,6 +43,9 @@ class Db {
         // Configurar relações
         Paciente.hasMany(Consulta, { foreignKey: 'cpf', sourceKey: 'cpf' });
         Consulta.belongsTo(Paciente, { foreignKey: 'cpf', targetKey: 'cpf' });
+
+        // Se force for true, o banco de dados será recriado a cada vez que a aplicação for iniciada
+        // await this.#sequelize.sync({ force: true });
 
         return true;
     }
