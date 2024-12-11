@@ -28,10 +28,10 @@ async function menuPrincipal() {
         console.log('-------------------------------------------------------------------------------');
         let i = Number(readline('Escolha uma opção: '));
         if (i == 1) {
-            menuPaciente();
+            await menuPaciente();
         }
         else if (i == 2) {
-            menuAgenda();
+            await menuAgenda();
         }
         else if (i == 3) {
             console.log('Fim');
@@ -43,7 +43,7 @@ async function menuPrincipal() {
     catch (e) {
         console.log('Erro: ' + e.message);
         if(e.message == 'Opção inválida'){
-            menuPrincipal();
+            await menuPrincipal();
         }
     }
 }
@@ -75,7 +75,7 @@ async function menuPaciente(){
                 console.log("Por favor, insira os dados novamente.\n");
             }
     }
-        menuPaciente();
+        await menuPaciente();
     }
     else if(j==2){
         try {
@@ -85,18 +85,18 @@ async function menuPaciente(){
         catch(e){
             console.log("Erro: " + e.message);
         }
-        menuPaciente();
+        await menuPaciente();
     }
     else if(j==3){
         await repositorioPaciente.listarPacientesNome();
-        menuPaciente();
+        await menuPaciente();
     }
     else if(j==4){
         await repositorioPaciente.listarPacientesCpf();
-        menuPaciente();
+        await menuPaciente();
     }
     else if(j==5){
-        menuPrincipal();
+        await menuPrincipal();
     }
     else{
         throw new Error('Opção inválida');
@@ -129,7 +129,7 @@ async function menuAgenda(){
                 console.log("Por favor, insira os dados novamente.\n");
             }
         }
-        menuAgenda();
+        await menuAgenda();
     }
     else if(j==2){
         let consultaCancelada = false;
@@ -147,7 +147,7 @@ async function menuAgenda(){
                 console.log("Por favor, insira os dados novamente.\n");
             }
         }
-        menuAgenda();
+        await menuAgenda();
     }
     else if(j==3){
         console.log('Apresentar a agenda toda (T) ou apenas um período de datas (P)?');
@@ -161,10 +161,10 @@ async function menuAgenda(){
             let dataFim = readline('Digite a data de fim: ');
             await repositorioConsulta.listarConsultas(dataInicio, dataFim);
         }
-        menuAgenda();
+        await menuAgenda();
     }
     else if(j==4){
-        menuPrincipal();
+        await menuPrincipal();
     }
     else{
         throw new Error('Opção inválida');
@@ -174,7 +174,7 @@ async function menuAgenda(){
 
 // Inicia a aplicação
 try{
-    menuPrincipal();
+    await menuPrincipal();
 }
 catch(e){
     console.log('Erro: ' + e.message);
