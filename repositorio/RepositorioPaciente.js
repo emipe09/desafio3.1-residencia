@@ -77,11 +77,16 @@ class RepositorioPaciente {
 
             await this.consultasDoPaciente(p.cpf);      
         }
-        
+
         console.log(linhaDivisoria);
     }
 
-
+    /**
+     * 
+     * @param {String} cpf 
+     * 
+     * Exibe as consultas agendadas para um paciente
+     */
     async consultasDoPaciente(cpf) {
         let consultas = await Consulta.findAll({ where: { cpf: cpf } });
         consultas.forEach(c => {
