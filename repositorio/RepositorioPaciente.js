@@ -34,45 +34,7 @@ class RepositorioPaciente {
      */
     async listarPacientesNome() {
         let pacientes = await Paciente.findAll({ order: [['nome', 'ASC']] });
-        let consultas = await Consulta.findAll();
-        pacientes.sort((a, b) => a.nome.localeCompare(b.nome));
-
-        // Essa parte do código é responsável por formatar a saída de acordo com o tamanho dos campos de dados
-        // O método Math.max() retorna o maior número de um ou mais números, nesse caso, o maior comprimento de CPF, nome, dataNasc e idade
-        // Contando com o tamanho do titulo da coluna no cabeçalho
-        const maxTamanhoNome = Math.max(...pacientes.map(p => p.nome.length), 4);
-        const linhaCabecalho = `${'CPF'.padEnd(11)} | ${'Nome'.padEnd(maxTamanhoNome)} | ${'Dt.Nasc.'.padEnd(10)} | ${'Idade'.padEnd(5)}`;
-        const linhaDivisoria = '-'.repeat(linhaCabecalho.length);
-
-        console.log(linhaDivisoria);
-        console.log(linhaCabecalho);
-        console.log(linhaDivisoria);
-
-        pacientes.forEach(p => {
-
-            console.log(
-                `${p.cpf.padEnd(11)} | ${p.nome.padEnd(maxTamanhoNome)} | ${p.dataNasc.padEnd(10)} | ${p.idade.toString().padStart(5)}`
-            );
-
-            const consultasDoPaciente = consultas.filter(c => c.cpf === p.cpf);
-            consultasDoPaciente.forEach(c => {
-                console.log(`  Agendado para: ${c.dataConsulta.split('-').reverse().join('/')}`);
-
-                // Formatação da hora, que vem em valor inteiro
-                const formatarHora = (hora) => {
-                const horaStr = hora.toString().padStart(4, '0');
-                return `${horaStr.slice(0, 2)}:${horaStr.slice(2)}`; 
-                };
-
-                let horaInicial = formatarHora(c.horaInicial);
-                let horaFinal = formatarHora(c.horaFinal);
-
-                console.log(`  ${horaInicial} às ${horaFinal}`);
-
-            });
-        });
-
-        console.log(linhaDivisoria);
+        await this.listarPaciente(pacientes);
     }
 
     /**
@@ -80,8 +42,25 @@ class RepositorioPaciente {
      */
     async listarPacientesCpf() {
         let pacientes = await Paciente.findAll({ order: [['cpf', 'ASC']] });
+        await this.listarPaciente(pacientes);
 
-        pacientes.sort((a, b) => a.cpf.localeCompare(b.cpf));
+    }
+
+    /**
+     * 
+     * @param {Array object}} pacientes 
+     * 
+     *  Essa parte do código é responsável por formatar a saída de acordo com o tamanho dos campos de dados
+        O método Math.max() retorna o maior número de um ou mais números, nesse caso, o maior comprimento de CPF, nome, dataNasc e idade
+        Contando com o tamanho do titulo da coluna no cabeçalho
+     */
+    async listarPaciente(pacientes){
+
+        if (pacientes.length === 0) {
+            console.log('Nenhum paciente cadastrado');
+            return;
+        }
+
 
         const maxTamanhoNome = Math.max(...pacientes.map(p => p.nome.length), 4);
         const linhaCabecalho = `${'CPF'.padEnd(11)} | ${'Nome'.padEnd(maxTamanhoNome)} | ${'Dt.Nasc.'.padEnd(10)} | ${'Idade'.padEnd(5)}`;
@@ -91,14 +70,37 @@ class RepositorioPaciente {
         console.log(linhaCabecalho);
         console.log(linhaDivisoria);
 
-        pacientes.forEach(p => {
-
+        for (const p of pacientes) {
             console.log(
                 `${p.cpf.padEnd(11)} | ${p.nome.padEnd(maxTamanhoNome)} | ${p.dataNasc.padEnd(10)} | ${p.idade.toString().padStart(5)}`
             );
-        });
+
+            await this.consultasDoPaciente(p.cpf);      
+        }
+        
         console.log(linhaDivisoria);
     }
+
+
+    async consultasDoPaciente(cpf) {
+        let consultas = await Consulta.findAll({ where: { cpf: cpf } });
+        consultas.forEach(c => {
+            console.log(`  Agendado para: ${c.dataConsulta.split('-').reverse().join('/')}`);
+
+            // Formatação da hora, que vem em valor inteiro
+            const formatarHora = (hora) => {
+            const horaStr = hora.toString().padStart(4, '0');
+            return `${horaStr.slice(0, 2)}:${horaStr.slice(2)}`; 
+            };
+
+            let horaInicial = formatarHora(c.horaInicial);
+            let horaFinal = formatarHora(c.horaFinal);
+
+            console.log(`  ${horaInicial} às ${horaFinal}`);
+
+        });
+    }
+        
 
 }
 
